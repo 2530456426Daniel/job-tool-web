@@ -1,3 +1,7 @@
+# @parcel/watcher 是 sass 的可选原生文件监听依赖；本项目由 Vite 按需编译 sass，
+# 不需要执行它的构建脚本，这里显式关闭，避免 pnpm 因未批准的构建脚本中断安装。
+allowBuilds:
+  '@parcel/watcher': false
 minimumReleaseAgeExclude:
   - vite@8.3.2
 storeDir: .pnpm-store

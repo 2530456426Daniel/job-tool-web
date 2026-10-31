@@ -9,13 +9,13 @@ import type { ApiResponse } from './types'
  * baseURL 来自环境变量 VITE_API_BASE_URL：
  * - 开发环境为 /api，由 vite.config.ts 的 proxy 转发到后端（无跨域）
  * - 生产环境可按部署方式改为后端完整地址
+ *
+ * 这里刻意不写死 Content-Type：JSON 请求由 axios 自动设置，
+ * FormData 上传时交给浏览器补上带 boundary 的 multipart/form-data。
  */
 const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 15000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 })
 
 // 请求拦截器：后续接入登录态后，在这里统一追加 token
@@ -66,11 +66,34 @@ async function requestData<T>(config: AxiosRequestConfig): Promise<T> {
  * 统一请求封装。
  *
  * 项目约定：后端接口统一使用 POST，参数通过请求体（JSON）传递，
- * 因此这里只暴露 post 一个方法，不提供 get / put / delete。
+ * 因此这里只暴露 POST 相关方法，不提供 get / put / delete。
  */
 export const http = {
+  /** 普通 JSON 请求 */
   post<T>(url: string, data?: unknown): Promise<T> {
     return requestData<T>({ method: 'POST', url, data })
+  },
+
+  /** multipart/form-data 上传：直接传 FormData，浏览器负责设置 boundary */
+  postForm<T>(url: string, data: FormData): Promise<T> {
+    return requestData<T>({ method: 'POST', url, data, timeout: 60000 })
+  },
+
+  /**
+   * 下载二进制内容（如 Excel）。
+   *
+   * 注意：后端在业务失败时仍可能返回 JSON 错误体，此时拿到的仍是 Blob，
+   * 调用方需要判断 Blob 的 type 并按文本解析（见 meetingUserCollection 页面）。
+   */
+  async postBlob(url: string, data?: unknown): Promise<Blob> {
+    const response = await instance.request<Blob>({
+      method: 'POST',
+      url,
+      data,
+      responseType: 'blob',
+      timeout: 60000,
+    })
+    return response.data
   },
 }
 

@@ -148,3 +148,22 @@ a:hover {
   color: #1e40af;
   background: var(--jt-primary-light);
 }
+
+/* ---------- Element Plus 主题对齐 ---------- */
+/* devtool 的两个统计页使用了 Element Plus，这里把主色与圆角对齐到项目主题变量。 */
+:root {
+  --el-color-primary: var(--jt-primary);
+  --el-color-primary-dark-2: var(--jt-primary-dark);
+  --el-border-radius-base: 6px;
+}
+
+/* 组件字体跟随全局字体，避免中英文混排时字形不一致 */
+.el-button,
+.el-input,
+.el-input-number,
+.el-select,
+.el-table,
+.el-message,
+.el-message-box {
+  font-family: inherit;
+}

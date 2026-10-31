@@ -12,7 +12,11 @@ Job Tool 前端项目，Vue3 + TypeScript + Vite，已搭好侧边栏框架与�
 | Vue Router | 5.3 | 路由 + 侧边栏菜单 |
 | Pinia | 4.0 | 状态管理 |
 | Axios | 1.20 | HTTP 请求封装 |
+| Element Plus | 2.14 | 表格/筛选/上传等组件（仅 devtool 统计页使用，全局注册） |
+| Sass | 1.93 | 页面样式（`<style lang="scss" scoped>`） |
 | pnpm | 11 | 包管理器 |
+
+> 依赖全部为 MIT 等开源许可的公共包，未使用任何 ziroom 私有包。
 
 > 说明：TypeScript 暂用 5.9 而非 7.x。TS 7 改为 Go 实现后不再导出 `typescript/lib/tsc`，
 > 当前 `vue-tsc` 仍依赖该路径，升级会导致类型检查失败。待 `vue-tsc` 支持后再升级。
@@ -41,7 +45,9 @@ src/
 │   ├── http.ts          axios 实例 + 统一响应拆解 + ApiError
 │   ├── types.ts         ApiResponse / PageResult 等通用类型
 │   ├── hello/           Hello World 示例模块（types.ts + index.ts）
-│   └── system/          系统模块（types.ts + index.ts）
+│   ├── system/          系统模块（types.ts + index.ts）
+│   ├── okrStatistics/   OKR达成情况统计（types.ts + index.ts）
+│   └── meetingUserCollection/ 共创会人员统计（types.ts + index.ts）
 ├── layouts/             布局层
 │   ├── MainLayout.vue   侧边栏 + 顶栏 + 内容区
 │   ├── AppSidebar.vue   侧边栏（菜单由路由自动生成）
@@ -52,9 +58,15 @@ src/
 │   └── app.ts           侧边栏折叠等 UI 状态
 ├── styles/
 │   └── main.css         全局样式与主题变量（CSS 变量）
+├── utils/
+│   ├── download.ts      Blob 下载 + 导出失败的 JSON 错误解析
+│   └── error.ts         统一提取可展示的错误提示
 ├── views/               页面
 │   ├── DashboardView.vue    工作台（含后端联通性检测）
 │   ├── HelloView.vue        Hello World（前后端联调示例）
+│   ├── devtool/
+│   │   ├── okrStatistics/         OKR达成情况统计
+│   │   └── meetingUserCollection/ 共创会人员统计
 │   ├── AboutView.vue        项目说明
 │   └── NotFoundView.vue     404
 ├── App.vue
@@ -101,7 +113,10 @@ const greeting = await helloApi.greet('Job Tool')   // 直接拿到 data，已�
 
 `src/api/http.ts` 负责：
 
-- **只提供 `http.post`**：后端接口统一使用 POST，因此封装里不提供 `get` / `put` / `delete`；
+- **只提供 POST 相关方法**：后端接口统一使用 POST，因此封装里不提供 `get` / `put` / `delete`；
+  - `http.post`：JSON 请求；
+  - `http.postForm`：multipart 文件上传（传 `FormData`，浏览器自动补 boundary）；
+  - `http.postBlob`：下载二进制（如 Excel 导出）；
 - 从 `VITE_API_BASE_URL` 读取 `baseURL`（默认 `/api`）；
 - 校验 `{code, message, data}` 结构，`code !== 0` 时抛出 `ApiError`；
 - 后续接入登录态时，在请求拦截器中统一追加 token。
@@ -144,10 +159,25 @@ export const jobApi = {
 - 组件内样式一律使用 `<style scoped>`
 - 模板中不要直接使用 `import.meta`（Vue 模板编译器无法解析），先在 `<script setup>` 中赋值给变量
 
+## devtool 工具页面
+
+两个页面由路由自动挂到侧边栏，访问路径（带 `vite.config.ts` 的 `/jobTool/` base）：
+
+| 页面 | 路由 | 对应后端 |
+| --- | --- | --- |
+| OKR达成情况统计 | `/jobTool/devtool/okr-statistics` | `OkrStatisticsController` |
+| 共创会人员统计 | `/jobTool/devtool/meeting-user-collection` | `MeetingUserCollectionController` |
+
+- 页面组件：`src/views/devtool/okrStatistics/index.vue`、`src/views/devtool/meetingUserCollection/index.vue`
+- 接口模块：`src/api/okrStatistics`、`src/api/meetingUserCollection`
+- 组件库 Element Plus 在 `src/main.ts` 全局注册，页面内直接使用 `el-*` 组件与 `v-loading`；
+  主色已通过 `main.css` 的 `--el-color-primary` 对齐到项目主题。
+- 导出失败时后端返回 JSON 错误体，前端用 `utils/download.ts#readJsonErrorFromBlob` 解析并提示。
+
 ## 后续规划
 
 - [ ] 登录页与路由守卫
 - [ ] 侧边栏支持多级菜单与图标组件（替换 emoji）
-- [ ] 引入组件库（如 Element Plus）替换手写表格/表单
+- [x] 引入组件库（Element Plus）——已在 devtool 统计页使用
 - [ ] 列表分页、搜索与表单校验
 - [ ] 按需引入 + 打包体积优化

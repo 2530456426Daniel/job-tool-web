@@ -65,6 +65,18 @@ export const routes: RouteRecordRaw[] = [
         meta: { sidebar: { title: 'Hello World', icon: '👋', order: 2 } },
       },
       {
+        path: 'devtool/okr-statistics',
+        name: 'okr-statistics',
+        component: () => import('@/views/devtool/okrStatistics/index.vue'),
+        meta: { sidebar: { title: 'OKR达成情况统计', icon: '🎯', order: 10 } },
+      },
+      {
+        path: 'devtool/meeting-user-collection',
+        name: 'meeting-user-collection',
+        component: () => import('@/views/devtool/meetingUserCollection/index.vue'),
+        meta: { sidebar: { title: '共创会人员统计', icon: '🤝', order: 11 } },
+      },
+      {
         path: 'about',
         name: 'about',
         component: () => import('@/views/AboutView.vue'),
