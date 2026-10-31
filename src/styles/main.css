@@ -1,0 +1,150 @@
+:root {
+  /* 主题色 */
+  --jt-primary: #3b82f6;
+  --jt-primary-dark: #2563eb;
+  --jt-primary-light: #dbeafe;
+
+  /* 侧边栏 */
+  --jt-sidebar-bg: #1f2937;
+  --jt-sidebar-bg-hover: #374151;
+  --jt-sidebar-bg-active: #2563eb;
+  --jt-sidebar-text: #cbd5e1;
+  --jt-sidebar-text-active: #ffffff;
+  --jt-sidebar-width: 220px;
+  --jt-sidebar-width-collapsed: 64px;
+
+  /* 内容区 */
+  --jt-bg: #f5f7fa;
+  --jt-surface: #ffffff;
+  --jt-border: #e5e7eb;
+  --jt-text: #1f2937;
+  --jt-text-secondary: #6b7280;
+
+  /* 状态色 */
+  --jt-success: #10b981;
+  --jt-danger: #ef4444;
+  --jt-warning: #f59e0b;
+
+  --jt-radius: 8px;
+  --jt-header-height: 56px;
+  --jt-shadow: 0 1px 3px rgb(0 0 0 / 8%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--jt-text);
+  background-color: var(--jt-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--jt-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--jt-primary-dark);
+}
+
+/* 通用卡片 */
+.jt-card {
+  padding: 20px;
+  background: var(--jt-surface);
+  border: 1px solid var(--jt-border);
+  border-radius: var(--jt-radius);
+  box-shadow: var(--jt-shadow);
+}
+
+.jt-card__title {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* 通用按钮 */
+.jt-btn {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 14px;
+  font-size: 14px;
+  color: var(--jt-text);
+  cursor: pointer;
+  background: var(--jt-surface);
+  border: 1px solid var(--jt-border);
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.jt-btn:hover:not(:disabled) {
+  border-color: var(--jt-primary);
+  color: var(--jt-primary);
+}
+
+.jt-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.jt-btn--primary {
+  color: #fff;
+  background: var(--jt-primary);
+  border-color: var(--jt-primary);
+}
+
+.jt-btn--primary:hover:not(:disabled) {
+  color: #fff;
+  background: var(--jt-primary-dark);
+  border-color: var(--jt-primary-dark);
+}
+
+/* 状态标签 */
+.jt-tag {
+  display: inline-block;
+  padding: 1px 8px;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+.jt-tag--success {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.jt-tag--muted {
+  color: var(--jt-text-secondary);
+  background: #f3f4f6;
+}
+
+/* 提示条 */
+.jt-alert {
+  padding: 10px 14px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+.jt-alert--error {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.jt-alert--info {
+  color: #1e40af;
+  background: var(--jt-primary-light);
+}
